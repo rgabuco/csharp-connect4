@@ -34,15 +34,105 @@ namespace Connect4
             return dropChoice;
         }
     }
+    public class GameBoard
+    {
+        private char[,] board;
+        private const int Rows = 6; 
+        private const int Columns = 7;
+
+        public GameBoard()
+        {
+            board = new char[Rows + 1, Columns + 1];
+            InitializeBoard();
+        }
+        /*
+        Initialize the board 2D array. 
+        In each iteration, it assigns the character '*' to the corresponding cell in the board array.
+        */
+        private void InitializeBoard()
+        {
+            for (int i = 1; i <= Rows; i++)
+            {
+                for (int j = 1; j <= Columns; j++)
+                {
+                    board[i, j] = '*';
+                }
+            }
+        }
+        /*
+        Method to print the board game in the console.
+        */
+        public void DisplayBoard()
+        {
+            // Print column numbers
+            Console.Write(" ");
+            for (int j = 1; j <= Columns; j++)
+            {
+                Console.Write(" " + j + "  ");
+            }
+            Console.Write("\n");
+
+            // Print board
+            for (int i = 1; i <= Rows; i++)
+            {
+                Console.Write("|");
+                for (int j = 1; j <= Columns; j++)
+                {
+                    if (board[i, j] == 'X')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    else if (board[i, j] == 'O')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    else
+                    {
+                        Console.ResetColor();
+                    }
+                    Console.Write(" " + board[i, j] + " ");
+                    Console.ResetColor();
+                    Console.Write("|");
+                }
+                Console.Write("\n");
+
+                // Print separator line
+                Console.Write(" ");
+                for (int j = 1; j <= Columns; j++)
+                {
+                    Console.Write("--- ");
+                }
+                Console.Write("\n");
+            }
+        }
+
+        public bool IsFull()
+        {
+            //TODO: Define logic for checking if board is full
+            return false;
+        }
+
+        public bool DropDisc(int column, char playerDisc)
+        {
+            //TODO: Define logic for dropping disc
+            return false;
+        }
+
+        public bool CheckWin(char playerDisc)
+        {
+            //TODO: Define logic for checking win
+            return false;
+        }
+    }
     public class Connect4Game
     {
         private Player playerOne;
         private Player playerTwo;
-        //TODO: We can define another GameBoard class to keep track of game state
+        private GameBoard board;
 
         public Connect4Game()
         {
-            //TODO: We can initialize the GameBoard here
+            board = new GameBoard();
         }
 
         public void InitializePlayers()
@@ -58,13 +148,14 @@ namespace Connect4
         public void PlayGame()
         {
             //TODO: Define game logic
+            board.DisplayBoard();
         }
 
         private bool RestartGame()
         {
             //TODO: Define logic for restarting game
 
-            return false;
+            return true;
         }
     }
 
@@ -74,6 +165,7 @@ namespace Connect4
         {
             Connect4Game game = new Connect4Game();
             game.InitializePlayers();
+            game.PlayGame();
         }
     }
 }
