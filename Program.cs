@@ -6,8 +6,8 @@ namespace Connect4
     {
         public string Name { get; set; }
         public char Disc { get; set; }
-        
-        public Player( string name, char disc)
+
+        public Player(string name, char disc)
         {
             Name = name;
             Disc = disc;
@@ -18,7 +18,7 @@ namespace Connect4
 
     public class HumanPlayer : Player
     {
-        public HumanPlayer(string name, char disc) : base( name, disc) { }
+        public HumanPlayer(string name, char disc) : base(name, disc) { }
 
         public override int PlayerMove()
         {
@@ -28,7 +28,7 @@ namespace Connect4
             {
                 Console.WriteLine("Please enter a number between 1 and 7: ");
                 dropChoice = Convert.ToInt32(Console.ReadLine());
-            
+
             } while (dropChoice < 1 || dropChoice > 7);
 
             return dropChoice;
@@ -37,7 +37,7 @@ namespace Connect4
     public class GameBoard
     {
         private char[,] board;
-        private const int Rows = 6; 
+        private const int Rows = 6;
         private const int Columns = 7;
 
         public GameBoard()
@@ -132,9 +132,44 @@ namespace Connect4
 
         public bool CheckWin(char playerDisc)
         {
-            //TODO: Define logic for checking win
-            Console.WriteLine("Checking win");
+            for (int i = 1; i <= Rows; i++)
+            {
+                for (int j = 1; j <= Columns; j++)
+                {
+                    if (board[i, j] == playerDisc)
+                    {
+                       if (CheckDirection(i, j, playerDisc, -1, 1) ||
+                           CheckDirection(i, j, playerDisc, 1, 1) ||
+                           CheckDirection(i, j, playerDisc, 0, 1) ||
+                           CheckDirection(i, j, playerDisc, 1, 0))
+                            {
+                                return true;
+                        }
+                    }
+                }
+            }
             return false;
+        }
+        /*
+        Added this method to check if a player has won based on the specified check direction.
+        */
+        private bool CheckDirection(int row, int col, char playerDisc, int rowDir, int colDir)
+        {
+            int count = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                int r = row + i * rowDir;
+                int c = col + i * colDir;
+                if (r > 0 && r <= Rows && c > 0 && c <= Columns && board[r, c] == playerDisc)
+                {
+                    count++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return count == 4;
         }
     }
     public class Connect4Game
