@@ -109,18 +109,31 @@ namespace Connect4
         public bool IsFull()
         {
             //TODO: Define logic for checking if board is full
+            Console.WriteLine("Checking if board is full");
             return false;
         }
-
+        /*
+        Drops a player's disc into the specified column of the game board. 
+        It starts from the bottom of the column and places the disc in the first available position marked by '*'. 
+        If successful, it returns true; otherwise, it returns false.
+        */
         public bool DropDisc(int column, char playerDisc)
         {
-            //TODO: Define logic for dropping disc
+            for (int i = Rows; i >= 1; i--)
+            {
+                if (board[i, column] == '*')
+                {
+                    board[i, column] = playerDisc;
+                    return true;
+                }
+            }
             return false;
         }
 
         public bool CheckWin(char playerDisc)
         {
             //TODO: Define logic for checking win
+            Console.WriteLine("Checking win");
             return false;
         }
     }
@@ -148,7 +161,32 @@ namespace Connect4
         public void PlayGame()
         {
             //TODO: Define game logic
-            board.DisplayBoard();
+            bool gameOn = true;
+            Player currentPlayer = playerOne;
+
+            while (gameOn)
+            {
+                board.DisplayBoard();
+                int dropChoice = currentPlayer.PlayerMove();
+                board.DropDisc(dropChoice, currentPlayer.Disc);
+
+                if (board.CheckWin(currentPlayer.Disc))
+                {
+                    board.DisplayBoard();
+                    Console.WriteLine($"{currentPlayer.Name} Connected Four, You Win!");
+                    gameOn = false;
+                }
+                else if (board.IsFull())
+                {
+                    board.DisplayBoard();
+                    Console.WriteLine("The board is full, it is a draw!");
+                    gameOn = false;
+                }
+                else
+                {
+                    currentPlayer = currentPlayer == playerOne ? playerTwo : playerOne;
+                }
+            }
         }
 
         private bool RestartGame()
