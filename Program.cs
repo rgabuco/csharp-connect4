@@ -132,23 +132,27 @@ namespace Connect4
 
         public bool CheckWin(char playerDisc)
         {
+            // Iterate through each row of the board
             for (int i = 1; i <= Rows; i++)
             {
+                // Iterate through each column of the board
                 for (int j = 1; j <= Columns; j++)
                 {
+                    // Check if the current position contains the player's disc
                     if (board[i, j] == playerDisc)
                     {
-                       if (CheckDirection(i, j, playerDisc, -1, 1) ||
-                           CheckDirection(i, j, playerDisc, 1, 1) ||
-                           CheckDirection(i, j, playerDisc, 0, 1) ||
-                           CheckDirection(i, j, playerDisc, 1, 0))
+                       // Check for a winning sequence in four possible directions
+                        if (CheckDirection(i, j, playerDisc, -1, 1) || // Diagonal from bottom-left to top-right
+                           CheckDirection(i, j, playerDisc, 1, 1) ||   // Diagonal from top-left to bottom-right
+                           CheckDirection(i, j, playerDisc, 0, 1) ||   // Horizontal from left to right
+                           CheckDirection(i, j, playerDisc, 1, 0))     // Vertical from top to bottom
                             {
-                                return true;
+                                return true; // Return true if any direction has a winning sequence
                         }
                     }
                 }
             }
-            return false;
+            return false; // Return false if no winning sequence is found
         }
         /*
         Added this method to check if a player has won based on the specified check direction.
