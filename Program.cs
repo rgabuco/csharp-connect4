@@ -111,7 +111,7 @@ namespace Connect4
         public bool IsFull()
         {
             // Iterate through each column in the first row (excluding the 0th index column)
-            for (int i = 1; i < Columns; i++)
+            for (int i = 1; i <= Columns; i++)
                     {
                 // Check if the current cell is empty (denoted by '*')
                 if (board[1, i] == '*')
