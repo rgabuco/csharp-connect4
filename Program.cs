@@ -1,3 +1,5 @@
+
+
 using System;
 
 namespace Connect4
@@ -108,9 +110,14 @@ namespace Connect4
 
         public bool IsFull()
         {
-            //TODO: Define logic for checking if board is full
-            Console.WriteLine("Checking if board is full");
-            return false;
+            // Iterate through each column in the first row (excluding the 0th index column)
+            for (int i = 1; i < Columns; i++)
+                    {
+                // Check if the current cell is empty (denoted by '*')
+                if (board[1, i] == '*')
+                    return false; // Return false if an empty cell is found
+            }
+            return true;// Return true if no empty cells are found in the first row
         }
         /*
         Drops a player's disc into the specified column of the game board. 
@@ -141,13 +148,13 @@ namespace Connect4
                     // Check if the current position contains the player's disc
                     if (board[i, j] == playerDisc)
                     {
-                       // Check for a winning sequence in four possible directions
+                        // Check for a winning sequence in four possible directions
                         if (CheckDirection(i, j, playerDisc, -1, 1) || // Diagonal from bottom-left to top-right
                            CheckDirection(i, j, playerDisc, 1, 1) ||   // Diagonal from top-left to bottom-right
                            CheckDirection(i, j, playerDisc, 0, 1) ||   // Horizontal from left to right
                            CheckDirection(i, j, playerDisc, 1, 0))     // Vertical from top to bottom
-                            {
-                                return true; // Return true if any direction has a winning sequence
+                        {
+                            return true; // Return true if any direction has a winning sequence
                         }
                     }
                 }
