@@ -4,6 +4,12 @@ using System;
 
 namespace Connect4
 {
+    // class for debug flags and global variables (if needed)
+    public static class Globals
+    {
+        public static bool Debug = true; //TODO: Set to false for final release
+    }
+
     public abstract class Player
     {
         public string Name { get; set; }
@@ -112,10 +118,14 @@ namespace Connect4
         {
             // Iterate through each column in the first row (excluding the 0th index column)
             for (int i = 1; i <= Columns; i++)
-                    {
+            {
                 // Check if the current cell is empty (denoted by '*')
                 if (board[1, i] == '*')
+                {
+                    if (Globals.Debug) { Console.WriteLine("Column " + i + " is full"); }
                     return false; // Return false if an empty cell is found
+                }
+                    
             }
             return true;// Return true if no empty cells are found in the first row
         }
@@ -131,6 +141,7 @@ namespace Connect4
                 if (board[i, column] == '*')
                 {
                     board[i, column] = playerDisc;
+                    if (Globals.Debug) { Console.WriteLine("Player " + playerDisc + " dropped in column " + column); }
                     return true;
                 }
             }
@@ -210,23 +221,25 @@ namespace Connect4
             bool gameOn = true;
             Player currentPlayer = playerOne;
 
+            if (Globals.Debug) { Console.WriteLine("Starting Game..."); }
             while (gameOn)
             {
                 board.DisplayBoard();
                 int dropChoice = currentPlayer.PlayerMove();
+                if(Globals.Debug) { Console.WriteLine($"Player {currentPlayer.Name} dropping {currentPlayer.Disc} on {dropChoice}"); }
                 board.DropDisc(dropChoice, currentPlayer.Disc);
 
                 if (board.CheckWin(currentPlayer.Disc))
                 {
                     board.DisplayBoard();
                     Console.WriteLine($"{currentPlayer.Name} Connected Four, You Win!");
-                    gameOn = false;
+                    gameOn = RestartGame();
                 }
                 else if (board.IsFull())
                 {
                     board.DisplayBoard();
                     Console.WriteLine("The board is full, it is a draw!");
-                    gameOn = false;
+                    gameOn = RestartGame();
                 }
                 else
                 {
@@ -237,9 +250,20 @@ namespace Connect4
 
         private bool RestartGame()
         {
-            //TODO: Define logic for restarting game
-
-            return true;
+            Console.WriteLine("Would you like to restart? Yes(1) No(2): ");
+            int restart = Convert.ToInt32(Console.ReadLine());
+            //Rudy: TODO: I will improve the validation logic later, let's keep it simple for now.
+            if (restart == 1)
+            {
+                if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
+                board = new GameBoard();
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Goodbye!");
+                return false;
+            }
         }
     }
 
