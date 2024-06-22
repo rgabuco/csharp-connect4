@@ -171,6 +171,11 @@ namespace Connect4
                 }
             }
             return false; // Return false if no winning sequence is found
+            
+            public bool IsValidDrop(int column)
+            {
+                return DropDisc(column, '*');  // Check if the column is valid without actually dropping the disc
+            }
         }
         /*
         Added this method to check if a player has won based on the specified check direction.
