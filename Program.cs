@@ -22,6 +22,11 @@ namespace Connect4
             Disc = disc;
             this.game = game;
         }
+        // Updates the game board reference for the player to the new provided game board.
+        public void UpdateGameBoard(GameBoard newGameBoard)
+        {
+            this.game = newGameBoard;
+        }
 
         public abstract int PlayerMove();
     }
@@ -201,10 +206,6 @@ namespace Connect4
             }
             return false; // Return false if no winning sequence is found
         }
-        public bool IsValidDrop(int column)
-        {
-            return DropDisc(column, '*');  // Check if the column is valid without actually dropping the disc
-        }
         /*
         Added this method to check if a player has won based on the specified check direction.
         */
@@ -225,6 +226,11 @@ namespace Connect4
                 }
             }
             return count == 4;
+        }
+        public bool IsValidDrop(int column)
+        {
+            // Check if the top cell of the column is empty ('*')
+            return board[1, column] == '*';
         }
     }
     public class Connect4Game
@@ -298,6 +304,8 @@ namespace Connect4
             {
                 if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
                 board = new GameBoard();
+                playerOne.UpdateGameBoard(board); // Update playerOne's GameBoard reference
+                playerTwo.UpdateGameBoard(board); // Update playerTwo's GameBoard reference
                 return true;
             }
             else
