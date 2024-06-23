@@ -12,13 +12,15 @@ namespace Connect4
 
     public abstract class Player
     {
-        public string Name { get; set; }
-        public char Disc { get; set; }
+        public string Name { get; private set; }
+        public char Disc { get; private set; }
+        protected GameBoard game;
 
-        public Player(string name, char disc)
+        public Player(GameBoard game, string name, char disc)
         {
             Name = name;
             Disc = disc;
+            this.game = game;
         }
 
         public abstract int PlayerMove();
@@ -26,7 +28,7 @@ namespace Connect4
 
     public class HumanPlayer : Player
     {
-        public HumanPlayer(string name, char disc) : base(name, disc) { }
+        public HumanPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
 
         public override int PlayerMove()
         {
@@ -36,8 +38,11 @@ namespace Connect4
             {
                 Console.WriteLine("Please enter a number between 1 and 7: ");
                 dropChoice = Convert.ToInt32(Console.ReadLine());
-
-            } while (dropChoice < 1 || dropChoice > 7);
+                if(!game.IsValidDrop(dropChoice))
+                {
+                    Console.WriteLine("Invalid column, please try again.");
+                }
+            } while (dropChoice < 1 || dropChoice > 7 || !game.IsValidDrop(dropChoice));
 
             return dropChoice;
         }
@@ -171,11 +176,10 @@ namespace Connect4
                 }
             }
             return false; // Return false if no winning sequence is found
-            
-            public bool IsValidDrop(int column)
-            {
-                return DropDisc(column, '*');  // Check if the column is valid without actually dropping the disc
-            }
+        }
+        public bool IsValidDrop(int column)
+        {
+            return DropDisc(column, '*');  // Check if the column is valid without actually dropping the disc
         }
         /*
         Added this method to check if a player has won based on the specified check direction.
@@ -215,9 +219,9 @@ namespace Connect4
             //All human players for now
             Console.WriteLine("Let's Play Connect 4!");
             Console.WriteLine("Player One please enter your name: ");
-            playerOne = new HumanPlayer(Console.ReadLine(), 'X');
+            playerOne = new HumanPlayer(board, Console.ReadLine(), 'X');
             Console.WriteLine("Player Two please enter your name: ");
-            playerTwo = new HumanPlayer(Console.ReadLine(), 'O');
+            playerTwo = new HumanPlayer(board, Console.ReadLine(), 'O');
         }
 
         public void PlayGame()
