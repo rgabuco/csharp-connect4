@@ -38,9 +38,15 @@ namespace Connect4
             {
                 Console.WriteLine("Please enter a number between 1 and 7: ");
                 dropChoice = Convert.ToInt32(Console.ReadLine());
+                if(dropChoice < 1 || dropChoice > 7)
+                {
+                    Console.WriteLine("Invalid column #, please try again.");
+                    continue;
+                }
                 if(!game.IsValidDrop(dropChoice))
                 {
-                    Console.WriteLine("Invalid column, please try again.");
+                    Console.WriteLine("Column is full, please try again.");
+                    continue;
                 }
             } while (dropChoice < 1 || dropChoice > 7 || !game.IsValidDrop(dropChoice));
 
