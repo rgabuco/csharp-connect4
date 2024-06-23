@@ -7,13 +7,13 @@ namespace Connect4
     // class for debug flags and global variables (if needed)
     public static class Globals
     {
-        public static bool Debug = true; //TODO: Set to false for final release
+        public static bool Debug = false;
     }
 
     public abstract class Player
     {
-        public string Name { get; private set; }
-        public char Disc { get; private set; }
+        public string Name { get; set; }
+        public char Disc { get; set; }
         protected GameBoard game;
 
         public Player(GameBoard game, string name, char disc)
@@ -44,6 +44,24 @@ namespace Connect4
                 }
             } while (dropChoice < 1 || dropChoice > 7 || !game.IsValidDrop(dropChoice));
 
+            return dropChoice;
+        }
+    }
+    public class EasyComputerPlayer : Player
+    {
+        public EasyComputerPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
+
+        public override int PlayerMove()
+        {
+            // Just a simple AI that randomly chooses a column
+            Console.WriteLine($"{Name}'s Turn");
+            Random random = new Random();
+            int dropChoice;
+            do
+            {
+                dropChoice = random.Next(1, 8);
+            } while (!game.IsValidDrop(dropChoice));
+            Console.WriteLine("Dropping disc in column " + dropChoice);
             return dropChoice;
         }
     }
@@ -127,7 +145,7 @@ namespace Connect4
                 // Check if the current cell is empty (denoted by '*')
                 if (board[1, i] == '*')
                 {
-                    if (Globals.Debug) { Console.WriteLine("Column " + i + " is full"); }
+                    if (Globals.Debug) { Console.WriteLine("Column " + i + " has empty cell"); }
                     return false; // Return false if an empty cell is found
                 }
                     
@@ -146,7 +164,7 @@ namespace Connect4
                 if (board[i, column] == '*')
                 {
                     board[i, column] = playerDisc;
-                    if (Globals.Debug) { Console.WriteLine("Player " + playerDisc + " dropped in column " + column); }
+                    if (Globals.Debug) { Console.WriteLine("Disc " + playerDisc + " dropped in column " + column); }
                     return true;
                 }
             }
@@ -216,12 +234,20 @@ namespace Connect4
 
         public void InitializePlayers()
         {
-            //All human players for now
             Console.WriteLine("Let's Play Connect 4!");
             Console.WriteLine("Player One please enter your name: ");
             playerOne = new HumanPlayer(board, Console.ReadLine(), 'X');
-            Console.WriteLine("Player Two please enter your name: ");
-            playerTwo = new HumanPlayer(board, Console.ReadLine(), 'O');
+            Console.WriteLine("Do you want to play with an easy computer opponent? (y/n): ");
+            if (Console.ReadLine().ToLower() == "y")
+            {
+                playerTwo = new EasyComputerPlayer(board, "Computer", 'O');
+            }
+            else
+            {
+                // Player Two is a human player
+                Console.WriteLine("Player Two please enter your name: ");
+                playerTwo = new HumanPlayer(board, Console.ReadLine(), 'O');
+            }
         }
 
         public void PlayGame()
