@@ -43,7 +43,12 @@ namespace Connect4
             Console.WriteLine($"{Name}'s Turn");
             do
             {
-                Console.WriteLine("Please enter a number between 1 and 7: ");
+                Console.WriteLine("Please enter a number between 1 and 7, or type 'quit' to exit: ");
+                string input = Console.ReadLine();
+                if (input.ToLower() == "quit")
+                {
+                    Environment.Exit(0); // Exit the program
+                }
                 dropChoice = Convert.ToInt32(Console.ReadLine());
                 if (dropChoice < 1 || dropChoice > 7)
                 {
