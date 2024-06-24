@@ -1,10 +1,8 @@
-
-
 using System;
 
 namespace Connect4
 {
-    // class for debug flags and global variables (if needed)
+    // Class for debug flags and global variables (if needed)
     public static class Globals
     {
         public static bool Debug = false;
@@ -16,18 +14,21 @@ namespace Connect4
         public char Disc { get; set; }
         protected GameBoard game;
 
+        // Constructor to initialize the player with game board, name, and disc
         public Player(GameBoard game, string name, char disc)
         {
             Name = name;
             Disc = disc;
             this.game = game;
         }
-        // Updates the game board reference for the player to the new provided game board.
+
+        // Updates the game board reference for the player to the new provided game board
         public void UpdateGameBoard(GameBoard newGameBoard)
         {
             this.game = newGameBoard;
         }
 
+        // Abstract method for player's move, to be implemented by derived classes
         public abstract int PlayerMove();
     }
 
@@ -35,6 +36,7 @@ namespace Connect4
     {
         public HumanPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
 
+        // Implementation of the PlayerMove method for a human player
         public override int PlayerMove()
         {
             int dropChoice;
@@ -43,12 +45,12 @@ namespace Connect4
             {
                 Console.WriteLine("Please enter a number between 1 and 7: ");
                 dropChoice = Convert.ToInt32(Console.ReadLine());
-                if(dropChoice < 1 || dropChoice > 7)
+                if (dropChoice < 1 || dropChoice > 7)
                 {
                     Console.WriteLine("Invalid column #, please try again.");
                     continue;
                 }
-                if(!game.IsValidDrop(dropChoice))
+                if (!game.IsValidDrop(dropChoice))
                 {
                     Console.WriteLine("Column is full, please try again.");
                     continue;
@@ -58,10 +60,12 @@ namespace Connect4
             return dropChoice;
         }
     }
+
     public class EasyComputerPlayer : Player
     {
         public EasyComputerPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
 
+        // Implementation of the PlayerMove method for an easy computer player
         public override int PlayerMove()
         {
             // Just a simple AI that randomly chooses a column
@@ -76,21 +80,21 @@ namespace Connect4
             return dropChoice;
         }
     }
+
     public class GameBoard
     {
         private char[,] board;
         private const int Rows = 6;
         private const int Columns = 7;
 
+        // Constructor to initialize the game board
         public GameBoard()
         {
             board = new char[Rows + 1, Columns + 1];
             InitializeBoard();
         }
-        /*
-        Initialize the board 2D array. 
-        In each iteration, it assigns the character '*' to the corresponding cell in the board array.
-        */
+
+        // Initialize the board 2D array
         private void InitializeBoard()
         {
             for (int i = 1; i <= Rows; i++)
@@ -101,9 +105,8 @@ namespace Connect4
                 }
             }
         }
-        /*
-        Method to print the board game in the console.
-        */
+
+        // Method to print the board game in the console
         public void DisplayBoard()
         {
             // Print column numbers
@@ -148,6 +151,7 @@ namespace Connect4
             }
         }
 
+        // Method to check if the board is full
         public bool IsFull()
         {
             // Iterate through each column in the first row (excluding the 0th index column)
@@ -159,15 +163,11 @@ namespace Connect4
                     if (Globals.Debug) { Console.WriteLine("Column " + i + " has empty cell"); }
                     return false; // Return false if an empty cell is found
                 }
-                    
             }
-            return true;// Return true if no empty cells are found in the first row
+            return true; // Return true if no empty cells are found in the first row
         }
-        /*
-        Drops a player's disc into the specified column of the game board. 
-        It starts from the bottom of the column and places the disc in the first available position marked by '*'. 
-        If successful, it returns true; otherwise, it returns false.
-        */
+
+        // Drops a player's disc into the specified column of the game board
         public bool DropDisc(int column, char playerDisc)
         {
             for (int i = Rows; i >= 1; i--)
@@ -182,6 +182,7 @@ namespace Connect4
             return false;
         }
 
+        // Method to check if a player has won
         public bool CheckWin(char playerDisc)
         {
             // Iterate through each row of the board
@@ -206,9 +207,8 @@ namespace Connect4
             }
             return false; // Return false if no winning sequence is found
         }
-        /*
-        Added this method to check if a player has won based on the specified check direction.
-        */
+
+        // Added this method to check if a player has won based on the specified check direction
         private bool CheckDirection(int row, int col, char playerDisc, int rowDir, int colDir)
         {
             int count = 0;
@@ -227,23 +227,27 @@ namespace Connect4
             }
             return count == 4;
         }
+
+        // Method to check if the top cell of the column is empty ('*')
         public bool IsValidDrop(int column)
         {
-            // Check if the top cell of the column is empty ('*')
             return board[1, column] == '*';
         }
     }
+
     public class Connect4Game
     {
         private Player playerOne;
         private Player playerTwo;
         private GameBoard board;
 
+        // Constructor to initialize the game board
         public Connect4Game()
         {
             board = new GameBoard();
         }
 
+        // Method to initialize players
         public void InitializePlayers()
         {
             Console.WriteLine("Let's Play Connect 4!");
@@ -262,9 +266,9 @@ namespace Connect4
             }
         }
 
+        // Method to start and manage the game
         public void PlayGame()
         {
-            //TODO: Define game logic
             bool gameOn = true;
             Player currentPlayer = playerOne;
 
@@ -273,15 +277,17 @@ namespace Connect4
             {
                 board.DisplayBoard();
                 int dropChoice = currentPlayer.PlayerMove();
-                if(Globals.Debug) { Console.WriteLine($"Player {currentPlayer.Name} dropping {currentPlayer.Disc} on {dropChoice}"); }
+                if (Globals.Debug) { Console.WriteLine($"Player {currentPlayer.Name} dropping {currentPlayer.Disc} on {dropChoice}"); }
                 board.DropDisc(dropChoice, currentPlayer.Disc);
 
+                // Check if the current player has won
                 if (board.CheckWin(currentPlayer.Disc))
                 {
                     board.DisplayBoard();
                     Console.WriteLine($"{currentPlayer.Name} Connected Four, You Win!");
                     gameOn = RestartGame();
                 }
+                // Check if the board is full
                 else if (board.IsFull())
                 {
                     board.DisplayBoard();
@@ -290,16 +296,18 @@ namespace Connect4
                 }
                 else
                 {
+                    // Switch to the other player
                     currentPlayer = currentPlayer == playerOne ? playerTwo : playerOne;
                 }
             }
         }
 
+        // Method to handle game restart logic
         private bool RestartGame()
         {
             Console.WriteLine("Would you like to restart? Yes(1) No(2): ");
             int restart = Convert.ToInt32(Console.ReadLine());
-            //Rudy: TODO: I will improve the validation logic later, let's keep it simple for now.
+            // TODO: Improve the validation logic later, let's keep it simple for now
             if (restart == 1)
             {
                 if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
