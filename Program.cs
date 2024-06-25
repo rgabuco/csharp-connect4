@@ -7,15 +7,29 @@ namespace Connect4
     {
         public static bool Debug = false;
     }
-
-    public abstract class Player
+    public interface IGameBoard
+    {
+        void DisplayBoard();
+        bool IsFull();
+        bool DropDisc(int column, char playerDisc);
+        bool CheckWin(char playerDisc);
+        bool IsValidDrop(int column);
+    }
+    public interface IPlayer
+    {
+        string Name { get; set; }
+        char Disc { get; set; }
+        int PlayerMove();
+        void UpdateGameBoard(IGameBoard newGameBoard);
+    }
+    public abstract class Player : IPlayer
     {
         public string Name { get; set; }
         public char Disc { get; set; }
-        protected GameBoard game;
+        protected IGameBoard game;
 
         // Constructor to initialize the player with game board, name, and disc
-        public Player(GameBoard game, string name, char disc)
+        public Player(IGameBoard game, string name, char disc)
         {
             Name = name;
             Disc = disc;
@@ -23,7 +37,7 @@ namespace Connect4
         }
 
         // Updates the game board reference for the player to the new provided game board
-        public void UpdateGameBoard(GameBoard newGameBoard)
+        public void UpdateGameBoard(IGameBoard newGameBoard)
         {
             this.game = newGameBoard;
         }
@@ -34,7 +48,7 @@ namespace Connect4
 
     public class HumanPlayer : Player
     {
-        public HumanPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
+        public HumanPlayer(IGameBoard game, string name, char disc) : base(game, name, disc) { }
 
         // Implementation of the PlayerMove method for a human player
         public override int PlayerMove()
@@ -68,7 +82,7 @@ namespace Connect4
 
     public class EasyComputerPlayer : Player
     {
-        public EasyComputerPlayer(GameBoard game, string name, char disc) : base(game, name, disc) { }
+        public EasyComputerPlayer(IGameBoard game, string name, char disc) : base(game, name, disc) { }
 
         // Implementation of the PlayerMove method for an easy computer player
         public override int PlayerMove()
@@ -86,7 +100,7 @@ namespace Connect4
         }
     }
 
-    public class GameBoard
+    public class GameBoard : IGameBoard
     {
         private char[,] board;
         private const int Rows = 6;
@@ -242,9 +256,9 @@ namespace Connect4
 
     public class Connect4Game
     {
-        private Player playerOne;
-        private Player playerTwo;
-        private GameBoard board;
+        private IPlayer playerOne;
+        private IPlayer playerTwo;
+        private IGameBoard board;
 
         // Constructor to initialize the game board
         public Connect4Game()
@@ -290,7 +304,7 @@ namespace Connect4
         public void PlayGame()
         {
             bool gameOn = true;
-            Player currentPlayer = playerOne;
+            IPlayer currentPlayer = playerOne;
 
             if (Globals.Debug) { Console.WriteLine("Starting Game..."); }
             while (gameOn)
