@@ -268,6 +268,10 @@ namespace Connect4
         // Constructor to initialize the game board
         public Connect4Game(int rows = 6, int columns = 7)
         {
+            if(rows < 4 || columns < 4)
+            {
+                throw new ArgumentException("Invalid board size for a Connect 4 game. Rows and columns must be at least 4.");
+            }
             board = new GameBoard(rows, columns);
         }
 
@@ -371,7 +375,7 @@ namespace Connect4
     {
         static void Main(string[] args)
         {
-            Connect4Game game = new Connect4Game(6,7);
+            Connect4Game game = new Connect4Game(6,7); // 6 rows, 7 columns
             game.InitializePlayers();
             game.PlayGame();
         }
