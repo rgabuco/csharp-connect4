@@ -323,25 +323,29 @@ namespace Connect4
         }
 
         // Method to handle game restart logic
-        private bool RestartGame()
+    private bool RestartGame()
+    {
+        Console.WriteLine("Would you like to restart the game?(y/n): ");
+        string response = Console.ReadLine().Trim().ToLower();
+        if (response == "y")
         {
-            Console.WriteLine("Would you like to restart? Yes(1) No(2): ");
-            int restart = Convert.ToInt32(Console.ReadLine());
-            // TODO: Improve the validation logic later, let's keep it simple for now
-            if (restart == 1)
-            {
-                if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
-                board = new GameBoard();
-                playerOne.UpdateGameBoard(board); // Update playerOne's GameBoard reference
-                playerTwo.UpdateGameBoard(board); // Update playerTwo's GameBoard reference
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Goodbye!");
-                return false;
-            }
+            if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
+            board = new GameBoard();
+            playerOne.UpdateGameBoard(board); // Update playerOne's GameBoard reference
+            playerTwo.UpdateGameBoard(board); // Update playerTwo's GameBoard reference
+            return true;
         }
+        else if (response == "n")
+        {
+            Console.WriteLine("Goodbye!");
+            return false;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter 'y' for Yes or 'n' for No.");
+            return RestartGame(); // Recursively call until a valid response is given
+        }
+    }
     }
 
     class Program
