@@ -9,6 +9,8 @@ namespace Connect4
     }
     public interface IGameBoard
     {
+        int Rows { get; set; }
+        int Columns { get; set; }
         void DisplayBoard();
         bool IsFull();
         bool DropDisc(int column, char playerDisc);
@@ -57,14 +59,14 @@ namespace Connect4
             Console.WriteLine($"{Name}'s Turn");
             do
             {
-                Console.WriteLine("Please enter a number between 1 and 7, or type 'quit' to exit: ");
+                Console.WriteLine($"Please enter a number between 1 and {game.Columns}, or type 'quit' to exit: ");
                 string input = Console.ReadLine();
                 if (input.ToLower() == "quit")
                 {
                     Environment.Exit(0); // Exit the program
                 }
                 bool isValidNumber = Int32.TryParse(input, out dropChoice);
-                if (!isValidNumber || dropChoice < 1 || dropChoice > 7)
+                if (!isValidNumber || dropChoice < 1 || dropChoice > game.Columns)
                 {
                     Console.WriteLine("Invalid column #, please try again.");
                     continue;
@@ -74,7 +76,7 @@ namespace Connect4
                     Console.WriteLine("Column is full, please try again.");
                     continue;
                 }
-            } while (dropChoice < 1 || dropChoice > 7 || !game.IsValidDrop(dropChoice));
+            } while (dropChoice < 1 || dropChoice > game.Columns || !game.IsValidDrop(dropChoice));
 
             return dropChoice;
         }
@@ -93,7 +95,7 @@ namespace Connect4
             int dropChoice;
             do
             {
-                dropChoice = random.Next(1, 8);
+                dropChoice = random.Next(1, game.Columns + 1);
             } while (!game.IsValidDrop(dropChoice));
             Console.WriteLine("Dropping disc in column " + dropChoice);
             return dropChoice;
@@ -103,13 +105,16 @@ namespace Connect4
     public class GameBoard : IGameBoard
     {
         private char[,] board;
-        private const int Rows = 6;
-        private const int Columns = 7;
+        public int Rows { get; set; }
+        public int Columns { get; set; }
+        
 
         // Constructor to initialize the game board
-        public GameBoard()
+        public GameBoard(int rows, int columns)
         {
-            board = new char[Rows + 1, Columns + 1];
+            Rows = rows;
+            Columns = columns;
+            board = new char[Rows + 1, Columns + 1]; //+1 here so the 0th index column is not used
             InitializeBoard();
         }
 
@@ -261,9 +266,9 @@ namespace Connect4
         private IGameBoard board;
 
         // Constructor to initialize the game board
-        public Connect4Game()
+        public Connect4Game(int rows = 6, int columns = 7)
         {
-            board = new GameBoard();
+            board = new GameBoard(rows, columns);
         }
 
         // Method to initialize players
@@ -344,7 +349,7 @@ namespace Connect4
         if (response == "y")
         {
             if (Globals.Debug) { Console.WriteLine("Restarting Game..."); }
-            board = new GameBoard();
+            board = new GameBoard(board.Rows, board.Columns);
             playerOne.UpdateGameBoard(board); // Update playerOne's GameBoard reference
             playerTwo.UpdateGameBoard(board); // Update playerTwo's GameBoard reference
             return true;
@@ -366,7 +371,7 @@ namespace Connect4
     {
         static void Main(string[] args)
         {
-            Connect4Game game = new Connect4Game();
+            Connect4Game game = new Connect4Game(6,7);
             game.InitializePlayers();
             game.PlayGame();
         }
