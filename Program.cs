@@ -255,20 +255,35 @@ namespace Connect4
         // Method to initialize players
         public void InitializePlayers()
         {
-            Console.WriteLine("Let's Play Connect 4!");
-            Console.WriteLine("Player One please enter your name: ");
-            playerOne = new HumanPlayer(board, Console.ReadLine(), 'X');
-            Console.WriteLine("Do you want to play with an easy computer opponent? (y/n): ");
-            if (Console.ReadLine().ToLower() == "y")
+            bool validInput = false;
+            do
             {
-                playerTwo = new EasyComputerPlayer(board, "Computer", 'O');
-            }
-            else
-            {
-                // Player Two is a human player
-                Console.WriteLine("Player Two please enter your name: ");
-                playerTwo = new HumanPlayer(board, Console.ReadLine(), 'O');
-            }
+                Console.WriteLine("Let's Play Connect 4!");
+                Console.WriteLine("Please select the game mode:");
+                Console.WriteLine("1. Single player vs easy computer");
+                Console.WriteLine("2. Two players");
+                string gameMode = Console.ReadLine();
+
+                switch (gameMode)
+                {
+                    case "1":
+                        Console.WriteLine("Player please enter your name: ");
+                        playerOne = new HumanPlayer(board, Console.ReadLine(), 'X');
+                        playerTwo = new EasyComputerPlayer(board, "Computer", 'O');
+                        validInput = true;
+                        break;
+                    case "2":
+                        Console.WriteLine("Player One please enter your name: ");
+                        playerOne = new HumanPlayer(board, Console.ReadLine(), 'X');
+                        Console.WriteLine("Player Two please enter your name: ");
+                        playerTwo = new HumanPlayer(board, Console.ReadLine(), 'O');
+                        validInput = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid selection. Please select a valid mode.");
+                        break;
+                }
+            } while (!validInput);
         }
 
         // Method to start and manage the game
