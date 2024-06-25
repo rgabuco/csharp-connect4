@@ -59,13 +59,13 @@ namespace Connect4
             Console.WriteLine($"{Name}'s Turn");
             do
             {
-                Console.WriteLine($"Please enter a number between 1 and {game.Columns}, or type 'quit' to exit: ");
+                Console.WriteLine($"Please enter a number between 1 and {game.Columns}, or type '0' to exit: ");
                 string input = Console.ReadLine();
-                if (input.ToLower() == "quit")
+                bool isValidNumber = Int32.TryParse(input, out dropChoice);
+                if (dropChoice == 0)
                 {
                     Environment.Exit(0); // Exit the program
                 }
-                bool isValidNumber = Int32.TryParse(input, out dropChoice);
                 if (!isValidNumber || dropChoice < 1 || dropChoice > game.Columns)
                 {
                     Console.WriteLine("Invalid column #, please try again.");
