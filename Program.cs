@@ -49,8 +49,8 @@ namespace Connect4
                 {
                     Environment.Exit(0); // Exit the program
                 }
-                dropChoice = Convert.ToInt32(Console.ReadLine());
-                if (dropChoice < 1 || dropChoice > 7)
+                bool isValidNumber = Int32.TryParse(input, out dropChoice);
+                if (!isValidNumber || dropChoice < 1 || dropChoice > 7)
                 {
                     Console.WriteLine("Invalid column #, please try again.");
                     continue;
